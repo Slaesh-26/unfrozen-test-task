@@ -8,10 +8,12 @@ public class UnitMovement : MonoBehaviour
     [SerializeField] private float speed;
 
     private Vector3 initialPos;
+    private Vector3 combatSpot;
 
-    public void Init()
+    public void Init(Vector3 combatSpot)
     {
         initialPos = transform.position;
+        this.combatSpot = combatSpot;
     }
 
     public IEnumerator MoveTo(Vector3 position)
@@ -27,5 +29,10 @@ public class UnitMovement : MonoBehaviour
     public IEnumerator MoveToInitialPos()
     {
         yield return MoveTo(initialPos);
+    }
+    
+    public IEnumerator MoveToCombatSpot()
+    {
+        yield return MoveTo(combatSpot);
     }
 }

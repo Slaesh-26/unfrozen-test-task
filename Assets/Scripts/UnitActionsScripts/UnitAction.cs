@@ -8,7 +8,7 @@ public abstract class UnitAction : ScriptableObject
     
     public abstract void DoAction(Unit actor, Unit opponent);
 
-    public string GetText()
+    public virtual string GetText()
     {
         return text;
     }

@@ -18,7 +18,6 @@ public class ActionChoseButton : MonoBehaviour
     {
         text.text = action.GetText();
         this.action = action;
-        
         button.onClick.AddListener(OnClick);
     }
 

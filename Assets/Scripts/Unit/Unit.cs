@@ -17,10 +17,12 @@ public class Unit : MonoBehaviour
     [Space]
     [SerializeField] private UnitAction unitAction;
 
-    public void Init(Color selectedColor, Color deselectedColor, Color defaultColor)
+    private Vector3 combatSpot;
+
+    public void Init(Color selectedColor, Color deselectedColor, Color defaultColor, Vector3 combatSpot)
     {
         clickDetector.onClick += OnClick;
-        unitMovement.Init();
+        unitMovement.Init(combatSpot);
         unitVisuals.Init(selectedColor, deselectedColor, defaultColor);
     }
 

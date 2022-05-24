@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -9,12 +8,14 @@ public abstract class Squad : MonoBehaviour
     public event Action allUnitsPlayed;
     
     [SerializeField] protected List<Unit> units;
+    [SerializeField] protected Transform combatSpot;
     [SerializeField] private Color selectedColor;
     [SerializeField] private Color deselectedColor;
     [SerializeField] private Color defaultColor;
     
     protected CombatController combatController;
     protected List<Unit> opponents;
+    protected Unit currentUnit;
 
     public virtual void Init(CombatController combatController)
     {
@@ -22,11 +23,11 @@ public abstract class Squad : MonoBehaviour
 
         foreach (Unit unit in units)
         {
-            unit.Init(selectedColor, deselectedColor, defaultColor);
+            unit.Init(selectedColor, deselectedColor, defaultColor, combatSpot.position);
         }
     }
 
-    public virtual void StartTurn(List<Unit> opponents)
+    public void StartTurn(List<Unit> opponents)
     {
         this.opponents = opponents;
 
@@ -38,7 +39,7 @@ public abstract class Squad : MonoBehaviour
         StartNextMove();
     }
 
-    public virtual void EndTurn()
+    public void EndTurn()
     {
         foreach (Unit unit in units)
         {
@@ -72,5 +73,12 @@ public abstract class Squad : MonoBehaviour
 
         unit = availableUnits[random];
         return true;
+    }
+    
+    protected void OnCombatFinished()
+    {
+        currentUnit.PlayedInThisRound = true;
+        currentUnit.Visuals.SetDeselectedMarkerColor();
+        StartNextMove();
     }
 }

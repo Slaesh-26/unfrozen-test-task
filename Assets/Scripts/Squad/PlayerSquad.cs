@@ -6,8 +6,7 @@ using UnityEngine;
 public class PlayerSquad : Squad
 {
     [SerializeField] private ChooseActionUI chooseActionUI;
-
-    private Unit currentUnit;
+    
     private UnitAction chosenAction;
 
     public override void Init(CombatController combatController)
@@ -21,7 +20,7 @@ public class PlayerSquad : Squad
         if (TryPickRandomAvailableUnit(out currentUnit))
         {
             chooseActionUI.Show(currentUnit.GetAction());
-            chooseActionUI.unitActionChosen += OnChooseActionChosen;
+            chooseActionUI.unitActionChosen += OnChooseActionPicked;
             chooseActionUI.skipTurn += OnSkipTurn;
             
             currentUnit.Visuals.SetSelectedMarkerColor();
@@ -32,10 +31,10 @@ public class PlayerSquad : Squad
         }
     }
 
-    private void OnChooseActionChosen(UnitAction action)
+    private void OnChooseActionPicked(UnitAction action)
     {
         chooseActionUI.Hide();
-        chooseActionUI.unitActionChosen -= OnChooseActionChosen;
+        chooseActionUI.unitActionChosen -= OnChooseActionPicked;
         chooseActionUI.skipTurn -= OnSkipTurn;
 
         foreach (Unit opponent in opponents)
@@ -49,7 +48,7 @@ public class PlayerSquad : Squad
     private void OnSkipTurn()
     {
         chooseActionUI.Hide();
-        chooseActionUI.unitActionChosen -= OnChooseActionChosen;
+        chooseActionUI.unitActionChosen -= OnChooseActionPicked;
         chooseActionUI.skipTurn -= OnSkipTurn;
         
         OnCombatFinished();
@@ -64,13 +63,6 @@ public class PlayerSquad : Squad
             unit.onClick -= OnOpponentClicked;
         }
         
-        combatController.StartCombat(currentUnit, opponent, chosenAction, AttackSide.PLAYER_ATTACKS, OnCombatFinished);
-    }
-
-    private void OnCombatFinished()
-    {
-        currentUnit.PlayedInThisRound = true;
-        currentUnit.Visuals.SetDeselectedMarkerColor();
-        StartNextMove();
+        combatController.StartCombat(currentUnit, opponent, chosenAction, OnCombatFinished);
     }
 }

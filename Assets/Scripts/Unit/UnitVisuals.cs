@@ -41,12 +41,12 @@ public class UnitVisuals : MonoBehaviour
         StartCoroutine(PlaySelectedAnimationInternal());
     }
 
-    public void Attack()
+    public void AttackAnimation()
     {
         animator.SetTrigger("Attack");
     }
 
-    public void GetDamage()
+    public void GetDamageAnimation()
     {
         animator.SetTrigger("GetDamage");
     }

@@ -5,33 +5,21 @@ using UnityEngine;
 
 public class CombatController : MonoBehaviour
 {
-    [SerializeField] private Transform leftPos;
-    [SerializeField] private Transform rightPos;
-    
-    public void StartCombat(Unit attacker, Unit attacked, UnitAction chosenAction,AttackSide attackSide, Action callback)
+    public void StartCombat(Unit attacker, Unit attacked, UnitAction chosenAction, Action callback)
     {
-        StartCoroutine(StartCombatInternal(attacker, attacked, chosenAction, attackSide, callback));
+        StartCoroutine(StartCombatInternal(attacker, attacked, chosenAction, callback));
     }
 
-    private IEnumerator StartCombatInternal(Unit attacker, Unit attacked, UnitAction chosenAction, 
-                                            AttackSide attackSide, Action finishedCallback)
+    private IEnumerator StartCombatInternal(Unit attacker, Unit attacked, UnitAction chosenAction, Action finishedCallback)
     {
-        if (attackSide == AttackSide.PLAYER_ATTACKS)
-        {
-            yield return attacker.Movement.MoveTo(leftPos.position);
-            yield return attacked.Movement.MoveTo(rightPos.position);
-        }
-        else if (attackSide == AttackSide.ENEMY_ATTACKS)
-        {
-            yield return attacker.Movement.MoveTo(rightPos.position);
-            yield return attacked.Movement.MoveTo(leftPos.position);
-        }
+        yield return attacker.Movement.MoveToCombatSpot();
+        yield return attacked.Movement.MoveToCombatSpot();
         
         chosenAction.DoAction(attacker, attacked);
         
-        attacker.Visuals.Attack();
+        attacker.Visuals.AttackAnimation();
         yield return new WaitForSeconds(0.5f);
-        attacked.Visuals.GetDamage();
+        attacked.Visuals.GetDamageAnimation();
         yield return new WaitForSeconds(1f);
 
 
@@ -42,10 +30,4 @@ public class CombatController : MonoBehaviour
         
         finishedCallback.Invoke();
     }
-}
-
-public enum AttackSide
-{
-    PLAYER_ATTACKS,
-    ENEMY_ATTACKS
 }
